@@ -1,0 +1,9 @@
+[project]
+name = "paper-summarizer-finetune"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "mlx-lm==0.32.2",  # pinned: scripts/train.py patches mlx-lm internals; re-run tests/ after upgrading
+    "pypdf",
+    "pyyaml",
+]

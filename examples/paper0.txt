@@ -1,0 +1,22 @@
+Soil Fungal Networks Under Drought
+
+Abstract
+We investigate soil fungal networks under drought using 16S and ITS sequencing on grassland plots. Fungal richness fell from 88.3 to 38.5.
+
+1 Introduction
+Understanding soil fungal networks under drought matters. Sampling followed a randomized block design. Controls were handled identically. Sampling followed a randomized block design. Effect sizes are reported with confidence intervals. Effect sizes are reported with confidence intervals. Effect sizes are reported with confidence intervals. Several confounders were measured. Replicates were processed within a day. Sampling followed a randomized block design. Effect sizes are reported with confidence intervals. Previous studies reported mixed findings. Several confounders were measured. Several confounders were measured. Previous studies reported mixed findings. Effect sizes are reported with confidence intervals. Controls were handled identically. Replicates were processed within a day. Sampling followed a randomized block design. Results were robust to alternative model choices. Previous studies reported mixed findings. Previous studies reported mixed findings. Previous studies reported mixed findings. Previous studies reported mixed findings. Several confounders were measured. Replicates were processed within a day.
+
+2 Methods
+We used 16S and ITS sequencing with 108 samples from grassland plots. Several confounders were measured. Previous studies reported mixed findings. Replicates were processed within a day. Effect sizes are reported with confidence intervals. Effect sizes are reported with confidence intervals. Replicates were processed within a day. Results were robust to alternative model choices. Replicates were processed within a day. Replicates were processed within a day. Effect sizes are reported with confidence intervals. Controls were handled identically. Previous studies reported mixed findings. Several confounders were measured. Sampling followed a randomized block design. Data were analysed in R with mixed-effects models. Controls were handled identically. Sampling followed a randomized block design. Results were robust to alternative model choices. Several confounders were measured. Replicates were processed within a day. Controls were handled identically. Controls were handled identically. Effect sizes are reported with confidence intervals. Several confounders were measured. Previous studies reported mixed findings.
+
+3 Results
+Across 108 samples, fungal richness fell from 88.3 to 38.5 (p < 0.01). Effect sizes are reported with confidence intervals. Replicates were processed within a day. Several confounders were measured. Several confounders were measured. Data were analysed in R with mixed-effects models. Results were robust to alternative model choices. Results were robust to alternative model choices. Sampling followed a randomized block design. Effect sizes are reported with confidence intervals. Sampling followed a randomized block design. Data were analysed in R with mixed-effects models. Several confounders were measured. Results were robust to alternative model choices. Effect sizes are reported with confidence intervals. Previous studies reported mixed findings. Effect sizes are reported with confidence intervals. Previous studies reported mixed findings. Controls were handled identically. Several confounders were measured. Data were analysed in R with mixed-effects models. Data were analysed in R with mixed-effects models. Replicates were processed within a day. Previous studies reported mixed findings. Replicates were processed within a day. Replicates were processed within a day.
+
+4 Discussion
+Several confounders were measured. Results were robust to alternative model choices. Results were robust to alternative model choices. Effect sizes are reported with confidence intervals. Controls were handled identically. Previous studies reported mixed findings. Several confounders were measured. Data were analysed in R with mixed-effects models. Replicates were processed within a day. Several confounders were measured. Previous studies reported mixed findings. Effect sizes are reported with confidence intervals. Results were robust to alternative model choices. Replicates were processed within a day. Several confounders were measured.
+
+5 Conclusion
+Fungal richness fell under the studied conditions.
+
+References
+[1] A. Author, 2021.
