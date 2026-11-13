@@ -38,8 +38,9 @@ def main(csv_path: str, pdf_dir: str, name: str):
             bad.append(f"{file}: {problems[0]}")
         else:
             src = pdfs[file]
-            shutil.copy2(src, out / src.name)
-            (out / f"{src.stem}.summary.md").write_text(summary + "\n")
+            stem = re.sub(r'[<>:"/\\|?*]', "-", src.stem)  # characters Windows can't have in a file name
+            shutil.copy2(src, out / f"{stem}.pdf")
+            (out / f"{stem}.summary.md").write_text(summary + "\n", encoding="utf-8")
             done += 1
     print(f"{name}: {done}/{len(rows)} pairs -> {out}")
     if not (out / "research.md").exists():

@@ -1,14 +1,14 @@
 """Shared by every script: config, paper loading, prompt layout, output format."""
-import logging
 import re
-import subprocess
 from pathlib import Path
 
 import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
-CONFIG = yaml.safe_load((ROOT / "configs/sft.yaml").read_text())
-_INSTRUCTIONS, _, _RESEARCH = (ROOT / "prompts/system.md").read_text().strip().partition("My research:")
+# encoding="utf-8" everywhere: Windows would otherwise read these files as cp1252
+CONFIG = yaml.safe_load((ROOT / "configs/sft.yaml").read_text(encoding="utf-8"))
+_INSTRUCTIONS, _, _RESEARCH = ((ROOT / "prompts/system.md").read_text(encoding="utf-8").strip()
+                               .partition("My research:"))
 
 
 def system_prompt(research: str = _RESEARCH) -> str:
@@ -23,16 +23,11 @@ USER_PREFIX = "Summarize this paper.\n\n"
 def paper_text(path: Path) -> str:
     """PDF/txt/md -> plain text, reference list dropped (wastes tokens, no signal)."""
     if path.suffix.lower() == ".pdf":
-        from pypdf import PdfReader
-        logging.getLogger("pypdf").setLevel(logging.ERROR)  # font warnings, hundreds per paper
-        try:
-            text = "\n".join(p.extract_text() or "" for p in PdfReader(path).pages)
-        except Exception:  # pypdf gives up on some publisher PDFs ("More than one /FontFile found")
-            # ponytail: fallback needs poppler (brew install poppler); swap pypdf out if this gets common
-            text = subprocess.run(["pdftotext", "-q", str(path), "-"], capture_output=True,
-                                  text=True, check=True).stdout
+        import pymupdf  # pypdf crashed on 2 of the first 149 papers; this reads all of them
+        with pymupdf.open(path) as doc:
+            text = "\n".join(page.get_text() for page in doc)
     else:
-        text = path.read_text()
+        text = path.read_text(encoding="utf-8")
     refs = [m.start() for m in re.finditer(r"^\s*(references|bibliography)\s*$", text, re.I | re.M)]
     if refs and refs[-1] > len(text) / 2:
         text = text[:refs[-1]]

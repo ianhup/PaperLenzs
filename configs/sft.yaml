@@ -1,6 +1,7 @@
 # Everything you tune lives here. Read by mlx_lm.lora and by the scripts.
 
 model: mlx-community/gemma-4-e2b-it-4bit   # 4-bit base = QLoRA, leaves RAM for long papers
+torch_model: google/gemma-4-E2B-it         # the same model for scripts/train_torch.py (Windows/Linux)
 data: data/processed                        # train.jsonl / valid.jsonl from prepare_data.py
 adapter_path: outputs/adapters
 export_name: paper-summarizer               # name it shows up as in LM Studio

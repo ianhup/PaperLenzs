@@ -20,7 +20,7 @@ HOLDOUT_FRACTION = 0.1  # each of valid and test
 def system_for(folder):
     """A research.md next to the pairs replaces 'My research' from prompts/system.md for that folder."""
     f = folder / "research.md"
-    system = system_prompt(f.read_text()) if f.exists() else SYSTEM_PROMPT
+    system = system_prompt(f.read_text(encoding="utf-8")) if f.exists() else SYSTEM_PROMPT
     if "EDIT ME" in system:
         raise SystemExit(f"{folder}: add a research.md here (the research this folder's 'Relevance to "
                          "research' sections are judged against), or fill in 'My research:' in prompts/system.md")
@@ -41,7 +41,7 @@ def main():
             errors.append(f"{name}: no {stem}.pdf/.txt/.md next to the summary")
             continue
         system = system_for(folder)
-        summary, paper = summary_path.read_text().strip(), paper_text(papers[0])
+        summary, paper = summary_path.read_text(encoding="utf-8").strip(), paper_text(papers[0])
 
         if problems := format_problems(summary):
             errors.append(f"{name}: {'; '.join(problems)}")
@@ -79,7 +79,7 @@ def main():
     splits = {"test": rows[:n], "valid": rows[n:2 * n], "train": rows[2 * n:]}
     OUT.mkdir(parents=True, exist_ok=True)
     for split, part in splits.items():
-        (OUT / f"{split}.jsonl").write_text("".join(json.dumps(r) + "\n" for r in part))
+        (OUT / f"{split}.jsonl").write_text("".join(json.dumps(r) + "\n" for r in part), encoding="utf-8")
     print("ok: " + ", ".join(f"{len(p)} {s}" for s, p in splits.items()) + f" -> {OUT}")
 
 

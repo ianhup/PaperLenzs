@@ -4,7 +4,7 @@ Teaches Gemma 4 E2B to answer every paper with the same 8 sections (Title, Topic
 Introduction, Methods, Results, Discussion, Conclusion, Relevance to research), then puts the
 model into LM Studio, where you can keep asking questions about the paper.
 
-## Setup (once)
+## Setup (once, Mac; for Windows/Linux see [below](#windows--linux-nvidia-gpu))
 
 ```bash
 uv venv --python 3.11 .venv && uv pip install --python .venv/bin/python -r pyproject.toml
@@ -42,6 +42,34 @@ Other commands:
 - `scripts/summarize.py paper.pdf [--base]`: summarize from the terminal
 - `tests/test_format.py`, `tests/test_loss.py`: run after changing the format or upgrading mlx-lm
 
+## Windows / Linux (NVIDIA GPU)
+
+MLX only runs on Apple Silicon, so here training uses PyTorch instead: same data, same
+`configs/sft.yaml`, same prompt. Setup once (PowerShell; on Linux the Python is `.venv/bin/python`):
+
+```powershell
+git config --global core.longpaths true   # some paper file names are long
+uv venv --python 3.11 .venv
+uv pip install --python .venv\Scripts\python.exe -r pyproject.toml --torch-backend=auto
+```
+
+Then:
+
+```powershell
+.venv\Scripts\python.exe scripts\prepare_data.py                        # same as on Mac
+.venv\Scripts\python.exe scripts\train_torch.py                         # one run -> outputs\adapters_torch
+.venv\Scripts\python.exe scripts\train_torch.py --summarize paper.pdf   # try it on a paper
+```
+
+- `--iters 10` is a quick check; `tests\test_torch.py` checks the loss and the LoRA placement.
+- The first run downloads the base model (`torch_model` in the config, 10 GB).
+- Out of GPU memory: lower `max_seq_length` in `configs/sft.yaml` and re-run `prepare_data.py`.
+  The Mac numbers under Limits don't carry over; the base model's embedding tables alone stay
+  16-bit and take about 5.5 GB.
+- `sweep.py`, `eval.py` and `export.py` are Mac-only. For LM Studio on Windows,
+  `train_torch.py --merge` writes the fine-tuned model to `outputs\merged`; convert that folder to
+  GGUF with llama.cpp's `convert_hf_to_gguf.py` and load the `.gguf` in LM Studio.
+
 ## Files
 
 | file | what it does |
@@ -52,6 +80,7 @@ Other commands:
 | `scripts/import_csv.py` | a teammate's CSV + PDFs → `data/raw/<set>/` pairs, headings normalized |
 | `scripts/prepare_data.py` | raw pairs → `data/processed/{train,valid,test}.jsonl`, trims long papers to fit |
 | `scripts/train.py` | `mlx_lm.lora` + two Gemma 4 fixes (thinking off, summary-only loss) |
+| `scripts/train_torch.py` | the same training for Windows/Linux (PyTorch + PEFT), plus `--summarize` and `--merge` |
 | `scripts/sweep.py` | runs every sweep config, picks the winner by format → made-up numbers → loss |
 | `scripts/eval.py` | generates summaries, writes them to `outputs/eval/` for you to read |
 | `scripts/export.py` | fuses adapter → `~/.lmstudio/models/local/<export_name>` |

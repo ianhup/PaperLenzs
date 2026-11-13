@@ -3,7 +3,14 @@ name = "paper-summarizer-finetune"
 version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
-    "mlx-lm==0.32.2",  # pinned: scripts/train.py patches mlx-lm internals; re-run tests/ after upgrading
-    "pypdf",
+    "pymupdf",
     "pyyaml",
+    # Mac (Apple Silicon): MLX. Pinned: scripts/train.py patches mlx-lm internals; re-run tests/ after upgrading
+    "mlx-lm==0.32.2; sys_platform == 'darwin'",
+    # Windows / Linux with an NVIDIA GPU: PyTorch, for scripts/train_torch.py
+    "torch; sys_platform != 'darwin'",
+    "transformers>=5.22,<6; sys_platform != 'darwin'",  # on Mac it comes with mlx-lm; tested with 5.23
+    "peft; sys_platform != 'darwin'",
+    "accelerate; sys_platform != 'darwin'",
+    "bitsandbytes; sys_platform != 'darwin'",
 ]
