@@ -1,6 +1,4 @@
 .venv/
-data/raw/*
-!data/raw/.gitkeep
 data/processed/
 outputs/
 __pycache__/

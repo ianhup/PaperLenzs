@@ -8,7 +8,7 @@ from pathlib import Path
 
 from mlx_lm import generate, load
 
-from common import CONFIG, ROOT, messages, paper_text
+from common import CONFIG, ROOT, SYSTEM_PROMPT, messages, paper_text
 
 
 def load_model(adapter: str | Path | None = ROOT / CONFIG["adapter_path"]):
@@ -16,8 +16,8 @@ def load_model(adapter: str | Path | None = ROOT / CONFIG["adapter_path"]):
     return load(CONFIG["model"], adapter_path=str(adapter) if adapter else None)
 
 
-def summarize(model, tok, paper: str, max_tokens: int = 1500) -> str:
-    prompt = tok.apply_chat_template(messages(paper), add_generation_prompt=True,
+def summarize(model, tok, paper: str, system: str = SYSTEM_PROMPT, max_tokens: int = 1500) -> str:
+    prompt = tok.apply_chat_template(messages(paper, system=system), add_generation_prompt=True,
                                      enable_thinking=False)
     return generate(model, tok, prompt, max_tokens=max_tokens)
 

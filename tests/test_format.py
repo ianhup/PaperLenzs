@@ -16,6 +16,11 @@ assert format_problems("Sure! Here it is:\n\n" + good)                     # cha
 assert unsupported_numbers("accuracy 93.4 on 120 images", "we got 93.4 on 120 images") == []
 assert unsupported_numbers("accuracy 97.1", "we got 93.4") == ["97.1"]
 
+from import_csv import to_markdown  # noqa: E402
+for style in ("{s}: text", "{s}:\ntext\n", "## {s}\ntext\n"):  # the label styles the team's CSVs use
+    assert format_problems(to_markdown("\n".join(style.format(s=s) for s in SECTIONS))) == [], style
+assert format_problems(to_markdown("Here you go\nTitle: x"))               # chatter survives the conversion
+
 for s in SECTIONS:  # the prompt and the checker must agree on the format
     assert f"## {s}" in SYSTEM_PROMPT, s
 

@@ -12,13 +12,19 @@ uv venv --python 3.11 .venv && uv pip install --python .venv/bin/python -r pypro
 
 ## Each time you have new data
 
-1. **Fill in `My research:`** at the bottom of [prompts/system.md](prompts/system.md). The
-   Relevance section is trained against this text, so it has to be real. `prepare_data` refuses
-   to run while it still says EDIT ME.
-2. **Add papers to `data/raw/`**, in pairs:
-   `smith2024.pdf` (or `.txt` / `.md`) + `smith2024.summary.md`, your ideal summary.
-   See [examples/](examples/) for the shape. Aim for 30+ pairs; 100 is better.
-   Write the Relevance sections carefully; with few examples, that's the part the model gets wrong.
+1. **Import each teammate's CSV** (columns `Input` = pdf path, `Output` = summary) with the
+   folder of PDFs it names. One set per research project:
+
+```bash
+.venv/bin/python scripts/import_csv.py summaries.csv "folder with the pdfs" set_name
+```
+
+   That writes `data/raw/set_name/<paper>.pdf` + `<paper>.summary.md` pairs
+   (see [examples/](examples/) for the shape; you can also add pairs by hand).
+2. **Write that set's research into `data/raw/set_name/research.md`**. The set's Relevance
+   sections are trained against this text, so it has to be the research they were written for.
+   Pairs in a folder without a `research.md` use `My research:` from
+   [prompts/system.md](prompts/system.md), which is also what you fill in for LM Studio.
 3. Run:
 
 ```bash
@@ -43,6 +49,7 @@ Other commands:
 | `configs/sft.yaml` | every setting: base model, LoRA, lengths, the sweep list |
 | `prompts/system.md` | the instructions + your research profile; same text in training and LM Studio |
 | `scripts/common.py` | section list, format checker, made-up-number checker, PDF reading |
+| `scripts/import_csv.py` | a teammate's CSV + PDFs → `data/raw/<set>/` pairs, headings normalized |
 | `scripts/prepare_data.py` | raw pairs → `data/processed/{train,valid,test}.jsonl`, trims long papers to fit |
 | `scripts/train.py` | `mlx_lm.lora` + two Gemma 4 fixes (thinking off, summary-only loss) |
 | `scripts/sweep.py` | runs every sweep config, picks the winner by format → made-up numbers → loss |

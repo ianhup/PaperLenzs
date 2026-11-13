@@ -20,4 +20,4 @@ Findings were robust to alternative models; confounders were measured.
 Fungal richness fell under the studied conditions.
 
 ## Relevance to research
-High. Directly about drought and soil microbes, with field or sequencing data.
+Directly relevant: it is about drought and soil microbes, with field or sequencing data.

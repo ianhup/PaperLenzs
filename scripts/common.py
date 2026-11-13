@@ -1,12 +1,22 @@
 """Shared by every script: config, paper loading, prompt layout, output format."""
+import logging
 import re
+import subprocess
 from pathlib import Path
 
 import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
 CONFIG = yaml.safe_load((ROOT / "configs/sft.yaml").read_text())
-SYSTEM_PROMPT = (ROOT / "prompts/system.md").read_text().strip()
+_INSTRUCTIONS, _, _RESEARCH = (ROOT / "prompts/system.md").read_text().strip().partition("My research:")
+
+
+def system_prompt(research: str = _RESEARCH) -> str:
+    """Instructions + the research that 'Relevance to research' is judged against."""
+    return f"{_INSTRUCTIONS}My research:\n{research.strip()}"
+
+
+SYSTEM_PROMPT = system_prompt()  # prompts/system.md as written: what you paste into LM Studio
 USER_PREFIX = "Summarize this paper.\n\n"
 
 
@@ -14,7 +24,13 @@ def paper_text(path: Path) -> str:
     """PDF/txt/md -> plain text, reference list dropped (wastes tokens, no signal)."""
     if path.suffix.lower() == ".pdf":
         from pypdf import PdfReader
-        text = "\n".join(p.extract_text() or "" for p in PdfReader(path).pages)
+        logging.getLogger("pypdf").setLevel(logging.ERROR)  # font warnings, hundreds per paper
+        try:
+            text = "\n".join(p.extract_text() or "" for p in PdfReader(path).pages)
+        except Exception:  # pypdf gives up on some publisher PDFs ("More than one /FontFile found")
+            # ponytail: fallback needs poppler (brew install poppler); swap pypdf out if this gets common
+            text = subprocess.run(["pdftotext", "-q", str(path), "-"], capture_output=True,
+                                  text=True, check=True).stdout
     else:
         text = path.read_text()
     refs = [m.start() for m in re.finditer(r"^\s*(references|bibliography)\s*$", text, re.I | re.M)]
@@ -23,9 +39,9 @@ def paper_text(path: Path) -> str:
     return text.strip()
 
 
-def messages(paper: str, summary: str | None = None) -> list[dict]:
+def messages(paper: str, summary: str | None = None, system: str = SYSTEM_PROMPT) -> list[dict]:
     """The exact chat layout used in training; inference must match it."""
-    m = [{"role": "system", "content": SYSTEM_PROMPT},
+    m = [{"role": "system", "content": system},
          {"role": "user", "content": USER_PREFIX + paper}]
     return m + [{"role": "assistant", "content": summary}] if summary else m
 

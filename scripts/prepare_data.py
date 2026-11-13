@@ -1,4 +1,6 @@
-"""data/raw/<name>.pdf (or .txt/.md) + data/raw/<name>.summary.md -> data/processed/{train,valid,test}.jsonl
+"""data/raw/**/<name>.pdf (or .txt/.md) + <name>.summary.md -> data/processed/{train,valid,test}.jsonl
+
+A folder with its own research.md is trained against that research instead of prompts/system.md's.
 
 Bad summaries (wrong sections) stop the run; made-up-looking numbers only warn.
 Papers too long for max_seq_length are cut so the summary (the thing we train on) is never cut.
@@ -9,26 +11,36 @@ import random
 from transformers import AutoTokenizer
 
 from common import (CONFIG, ROOT, SYSTEM_PROMPT, format_problems, messages, paper_text,
-                    unsupported_numbers)
+                    system_prompt, unsupported_numbers)
 
 RAW, OUT = ROOT / "data/raw", ROOT / CONFIG["data"]
 HOLDOUT_FRACTION = 0.1  # each of valid and test
 
 
+def system_for(folder):
+    """A research.md next to the pairs replaces 'My research' from prompts/system.md for that folder."""
+    f = folder / "research.md"
+    system = system_prompt(f.read_text()) if f.exists() else SYSTEM_PROMPT
+    if "EDIT ME" in system:
+        raise SystemExit(f"{folder}: add a research.md here (the research this folder's 'Relevance to "
+                         "research' sections are judged against), or fill in 'My research:' in prompts/system.md")
+    return system
+
+
 def main():
-    if "EDIT ME" in SYSTEM_PROMPT:
-        raise SystemExit("Fill in 'My research:' in prompts/system.md first; every summary's "
-                         "'Relevance to research' section is trained against it.")
     tok = AutoTokenizer.from_pretrained(CONFIG["model"])
     budget = CONFIG["max_seq_length"]
     rows, errors = [], []
 
-    for summary_path in sorted(RAW.glob("*.summary.md")):
-        name = summary_path.name.removesuffix(".summary.md")
-        papers = [p for ext in (".pdf", ".txt", ".md") if (p := RAW / f"{name}{ext}").exists()]
+    for summary_path in sorted(RAW.rglob("*.summary.md")):
+        folder = summary_path.parent
+        stem = summary_path.name.removesuffix(".summary.md")
+        name = str(folder.relative_to(RAW) / stem)
+        papers = [p for ext in (".pdf", ".txt", ".md") if (p := folder / f"{stem}{ext}").exists()]
         if not papers:
-            errors.append(f"{name}: no {name}.pdf/.txt/.md next to the summary")
+            errors.append(f"{name}: no {stem}.pdf/.txt/.md next to the summary")
             continue
+        system = system_for(folder)
         summary, paper = summary_path.read_text().strip(), paper_text(papers[0])
 
         if problems := format_problems(summary):
@@ -44,7 +56,7 @@ def main():
             continue
 
         # fit paper into the token budget: everything except the paper is fixed cost
-        layout = tok.apply_chat_template(messages("", summary), tokenize=False, enable_thinking=False)
+        layout = tok.apply_chat_template(messages("", summary, system), tokenize=False, enable_thinking=False)
         fixed = len(tok.encode(layout, add_special_tokens=False))
         paper_ids = tok.encode(paper, add_special_tokens=False)
         room = budget - fixed - 16
@@ -54,7 +66,7 @@ def main():
         if len(paper_ids) > room:
             print(f"warn {name}: paper cut {len(paper_ids)} -> {room} tokens (raise max_seq_length to keep more)")
             paper = tok.decode(paper_ids[:room])
-        rows.append({"messages": messages(paper, summary)})
+        rows.append({"messages": messages(paper, summary, system)})
 
     if errors:
         raise SystemExit("Fix these first:\n  " + "\n  ".join(errors))

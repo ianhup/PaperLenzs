@@ -32,7 +32,7 @@ def evaluate(adapter, split: str, label: str) -> dict:
     loss = sum(summary_loss(model, tok, r) for r in rows) / len(rows)
     for i, row in enumerate(rows):
         paper = row["messages"][1]["content"].removeprefix(USER_PREFIX)
-        got = summarize(model, tok, paper)
+        got = summarize(model, tok, paper, row["messages"][0]["content"])  # that row's own research
         (out / f"{i}.md").write_text(got)
         problems, nums = format_problems(got), unsupported_numbers(got, paper)
         passed += not problems
