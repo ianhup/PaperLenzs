@@ -1,0 +1,3 @@
+Mockup (simulated ecological study): Do green roofs support more wild bees than conventional roofs?
+Topics: urban ecology, green roofs, wild bees, pollinator habitat.
+Field surveys on matched urban roofs compare wild bee abundance and species richness between extensive green roofs and conventional roofs, with floral cover, building height and surrounding green space as covariates. Bees are identified taxonomically. Nesting resources were not measured. The roofs are matched rather than randomized, the number of sites is modest, and the richness difference was not statistically significant (p = 0.17). The results are invented.

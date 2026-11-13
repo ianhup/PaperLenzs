@@ -1,0 +1,3 @@
+Mockup (simulated research article): Which cover slows the cooling of water the most? A fictional experiment on thermal insulation with everyday materials.
+Topics: heat transfer, thermal insulation, experimental measurement.
+An experiment was simulated to compare how much heat water retains in identical cups with different covers. Each condition had eight repetitions. After 20 minutes, the mean temperature was 58 °C with a felt sleeve, 53 °C with corrugated cardboard and 48 °C with no cover. The exercise illustrates how to compare materials under controlled conditions and how to limit a conclusion to the setup that was evaluated. The data are invented.

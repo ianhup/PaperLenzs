@@ -1,0 +1,7 @@
+Research Title: The Impact of Global Warming on the Migration Patterns and Survival of Arctic Terns
+My research focuses on how rising global temperatures are affecting the migration patterns and survival of Arctic terns, a bird species known for traveling some of the longest migration distances in the world.
+Over the past five years, my research team has been studying 250 Arctic terns to understand how changes in temperature, wind patterns, and food availability influence their migratory behavior. We equipped the birds with lightweight tracking devices to monitor their routes, migration duration, and resting locations.
+Our research investigates whether global warming is forcing these birds to travel longer distances, change their traditional migration routes, or spend more time searching for food.
+Our preliminary findings suggest that the birds have shifted their migration routes by approximately 12% compared to historical patterns. We also observed that some birds arrived at their breeding grounds earlier than expected, while others experienced delays associated with extreme weather conditions.
+One of our most significant findings was that changes in ocean temperatures appeared to affect the availability of small fish, forcing certain birds to travel farther to find sufficient food.
+The main goal of my research is to understand how climate change is disrupting bird migration and whether these changes could eventually threaten the survival of migratory species.
