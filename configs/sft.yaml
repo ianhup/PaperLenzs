@@ -9,10 +9,11 @@ export_name: paper-summarizer               # name it shows up as in LM Studio
 train: true
 fine_tune_type: lora
 mask_prompt: true          # only learn the summary, not to reproduce the paper
-# paper + summary tokens; prepare_data trims longer papers to fit. Measured on a 24 GB M4 Pro:
-# 8k tokens = 12 GB, 12k = 19 GB (over the ~17.8 GB GPU limit). Only training is capped:
-# in LM Studio the model still reads the whole paper.
-max_seq_length: 10240
+# paper + summary tokens; prepare_data trims longer papers to fit, so re-run it after changing this.
+# Peak GPU memory measured on a 24 GB M4 Pro (GPU limit 19.1 GB): 8192 = 14.0 GB, 10240 = 18.4 GB,
+# which runs out of memory as soon as other apps use the GPU. Only training is capped: in LM Studio
+# the model still reads the whole paper.
+max_seq_length: 8192
 max_summary_tokens: 1536   # longest summary allowed; training only scores this many positions
 grad_checkpoint: true      # trades speed for memory, needed at long lengths
 batch_size: 1

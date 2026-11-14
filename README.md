@@ -87,10 +87,14 @@ Then:
 
 ## Limits (measured on a 24 GB M4 Pro)
 
-- **Training reads at most ~10k tokens per paper** (`max_seq_length: 10240`). Longer papers are
+- **Training reads at most ~8k tokens per paper** (`max_seq_length: 8192`). Longer papers are
   trimmed for training only, with a warning. In LM Studio the model still reads the whole paper.
-  Memory: 8k tokens = 12 GB, 12k = 19 GB, over the GPU limit.
-- **Speed:** ~35 s per step at 10k tokens. 300 steps is about 3 h per run, so the default
+  Peak GPU memory and speed by `max_seq_length`: 4096 = 7.3 GB (~10 s/step), 6144 = 10.4 GB
+  (~18 s), 8192 = 14.0 GB (~27 s), 10240 = 18.4 GB (~34 s). The GPU limit here is 19.1 GB, and at
+  10240 training died with "Insufficient Memory" once other apps were open. On a smaller Mac,
+  lower `max_seq_length` (4096 for 16 GB) and re-run `prepare_data.py`. Your Mac's limit in GB:
+  `.venv/bin/python -c "import mlx.core as mx; print(mx.device_info()['max_recommended_working_set_size']/1e9)"`
+- **Speed:** ~27 s per step at 8k tokens. 300 steps is about 2.5 h per run, so the default
   3-run sweep is an overnight job. Fewer sweep entries or `--iters` cut that.
 - **Settings found by testing:** LoRA `scale: 4` (mlx's default of 20 broke Gemma 4 within 10 steps),
   attention + MLP layers only, last 16 layers.
